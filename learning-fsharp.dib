@@ -1,0 +1,240 @@
+#!markdown
+
+# 使用 F# 邁出您的第一步
+
+https://docs.microsoft.com/zh-tw/learn/paths/fsharp-first-steps/
+
+- [Microsoft Docs - F#](https://docs.microsoft.com/zh-tw/dotnet/fsharp/)
+- [Microsoft Docs - F# (GitHub)](https://github.com/dotnet/docs/tree/main/docs/fsharp)
+
+## 專案結構
+## 變數
+
+#!markdown
+
+## 專案結構
+
+建立 F# 專案時，基本上會有一個 `Program.fs` 檔，裡面會包含 `main()` 函式並接收 `argv` 參數。會使用 `[<EntryPoint>]` 來告訴 F# 編譯器這裡是程式的主要入口。
+
+基本上程式碼長得像下面這樣：
+
+#!fsharp
+
+[<EntryPoint>]
+let main argv =
+    printfn "Hello World from F#!"
+    0 // return an integer exit code
+
+#!fsharp
+
+// 定義函數，傳入一個引數 name
+let printGreeting name:string =
+    let str = $"Hello {name} from F#!"
+    str // 回傳值
+
+[<EntryPoint>]
+let main argv =
+    let message = printGreeting "F#" // Call the function
+    printfn "%s" message
+    0 // return an integer exit code
+
+#!markdown
+
+## 變數
+
+變數預設為不可變，但可以透過 `mutable` 關鍵字，使之成為可變的，即可使用 `<-` 來指定變數值。
+
+#!fsharp
+
+let name = "Poy Chang"
+//name <- $"{name} Chang" //預設為不可變，這裡會失敗
+printf $"{name}"
+
+#!fsharp
+
+let mutable name = "Poy"
+name <- $"{name} Chang"
+printf $"{name}"
+
+#!markdown
+
+### 型別推導
+
+宣告變數時不需要指定型別，F# 編譯器會自動推導變數的型別。
+
+也可以在宣告變數時，手動指定該變數的資料型別。
+
+|Type|Type syntax|Examples|
+|----|-----------|--------|
+|primitive type|*type-name*|`int`<br /><br />`float`<br /><br />`string`|
+|array|*type-name*[] or<br /><br />*type-name* array|`int[]`<br /><br />`array<int>`<br /><br />`int array`|
+|two-dimensional array|*type-name*[,]|`int[,]`<br /><br />`float[,]`|
+|three-dimensional array|*type-name*[,,]|`float[,,]`|
+|tuple|*type-name1* &#42; *type-name2* ...|For example, `(1,'b',3)` has type `int * char * int`|
+|function type that has a single parameter|*parameter-type1* -&gt; *return-type*|A function that takes an `int` and returns a `string` has type `int -> string`|
+|function type that has multiple parameters|*parameter-type1* -&gt; *parameter-type2* -&gt; ... -&gt; *return-type*|A function that takes an `int` and a `float` and returns a `string` has type `int -> float -> string`|
+
+#!fsharp
+
+let age = 30
+let pi = 3.14
+let name = "Poy Chang"
+
+printfn $"{age.GetType()}"
+printfn $"{pi.GetType()}"
+printfn $"{name.GetType()}"
+
+#!fsharp
+
+let age:float = 30
+
+printfn $"{age.GetType()}"
+
+#!markdown
+
+### 輸出到畫面
+
+將值輸出到畫面，可以使用 .NET 通用的 `Console.WriteLine` 函式，也可以使用 F# 所提供的 `printf` 和 `printfn`
+
+- `printf` 會輸出到 stdout 內嵌 (沒有任何分行符號)
+- `printfn` 會輸出以 stdout 加入分行符號
+- `Console.WriteLine` 來自 `System` 命名空間，適用於所有 .NET 語言
+
+#!fsharp
+
+let name = "Poy Chang"
+let age = 30
+let bool = true
+
+printfn $"{name}, {age}, {bool}"
+
+#!markdown
+
+## 運算子
+
+F# 的運算子基本上和 C# 差不多，但是否相等的運算子不一樣，要特別注意。
+
+- `<>` 檢查兩個值是否不相等
+- `=` 檢查兩個值是否相等
+
+#!fsharp
+
+let name = "Poy Chang"
+let isTrue = name = "Poy Chang"
+let isFalse = name <> "Poy Chang"
+
+printfn $"{isTrue}, {isFalse}"
+
+#!markdown
+
+## 條件式
+
+使用 `if...elif...else` 將條件式邏輯新增至程式碼
+
+>`unit` 是在未傳回實際值時作為預留位置的值。可以將其視為 `void` 或 `None`。
+
+#!fsharp
+
+let age = 30
+if age > 30 then
+    printfn "Senior citizen"
+else
+    printfn "Citizen"
+
+let cardValue = 1
+let cardDescription =
+    if cardValue = 1 then "Ace"
+    elif cardValue = 14 then "Ace"
+    else "A card"
+printfn "%s" cardDescription
+
+#!markdown
+
+## 迴圈
+
+- `for...in` 建構會假設有可逐一查看的可列舉集合，並逐一查看集合中的每個值
+- `for...to` 迴圈會從起始到結束，逐一查看，直到觸達迴圈變數的值為止
+- `while...do` 不像前兩個那樣以可列舉的集合為中心，而是會執行迴圈，直到符合條件為止
+
+#!fsharp
+
+let list = [1; 2; 3; 4; 5]
+printfn $"{list.GetType()}"
+
+for i in list do
+   printf "%d, " i
+
+#!fsharp
+
+for i = 1 to 5 do
+    printf "%i, " i
+
+#!fsharp
+
+let mutable quit = false
+let no = 11
+
+while not quit do
+    printf "Guess a number: "
+    let guess = Console.ReadLine() 
+    let guessNo = int guess
+    if guessNo = no then
+        quit <- true
+        printfn "You guessed correctly %i is the secret number" no
+    else
+        printfn "%i is incorrect" guessNo
+
+#!markdown
+
+## 函式
+
+```fsharp
+let <function name> <parameters> = <function body>
+```
+
+使用 `let` 來定義函式，不使用 `return` 關鍵字來傳回的內容，而是使用函式最後一行中的資訊，作為傳回的內容。
+
+參數使用 ` ` 空白符號來分隔多個參數。
+
+#!fsharp
+
+let addAndMultiply a b c =
+    let sum = a + b
+    let product = sum * c
+    product
+
+addAndMultiply 2 3 3
+
+#!markdown
+
+回傳值的型別會自動推導，可以不明確指定。也因此會從第一次使用該函式時，自動推導函式的回傳型別。
+
+#!fsharp
+
+let add a b = a + b
+let sum = add 2 2
+let concat = add "hello" "world" //回傳型別會在第一次使用推導出來，這裡會編譯失敗
+
+printfn $"{sum}"
+printfn $"{concat}"
+
+#!markdown
+
+### 明確型別
+
+明確說明要採用的參數類型，以及函式傳回的內容，有助於提高可讀性，不過大部分的時候，編譯器會幫我們識別出來，因此可能不需要此動作。
+
+參數的部分使用括號包起來，並使用 `:` 關鍵字來指定參數的型別。在定義函示的最後，加上 `:` 關鍵字來指定回傳的型別。
+
+#!fsharp
+
+let add (a:int) (b:int) :int = a + b
+let sum = add 2 2
+
+printfn $"{sum}"
+
+#!markdown
+
+## 接續下去！
+
+https://docs.microsoft.com/zh-tw/learn/modules/fsharp-functions/4-function-patterns
